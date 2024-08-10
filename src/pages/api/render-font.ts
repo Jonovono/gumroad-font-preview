@@ -12,6 +12,8 @@ const fontUrl = 'https://storage.googleapis.com/dripfarm-assets/Ice-Cold-Solid-L
 
 loadAndRegisterFont(fontUrl);
 
+var loaded = false;
+
 
 // Function to load and register the font if it hasn't been registered yet
 async function loadAndRegisterFont(url: string) {
@@ -27,10 +29,12 @@ async function loadAndRegisterFont(url: string) {
 
     // Register the font
     registerFont(fontPath, { family: 'Ice Cold Solid' });
+    loaded = true;
     console.log('Font registered successfully.');
   } else {
     // If the font is already registered, we simply register it again (in case it was unregistered)
     registerFont(fontPath, { family: 'Ice Cold Solid' });
+    loaded = true;
     console.log('Font already exists and is registered.');
   }
 }
@@ -39,6 +43,10 @@ async function loadAndRegisterFont(url: string) {
 
 export const POST: APIRoute = async ({ request }) => {
   const { text, fontSize } = await request.json();
+
+  if (!loaded) {
+    await loadAndRegisterFont(fontUrl);
+  }
 
   console.log("Rendering font", text, fontSize);
 
